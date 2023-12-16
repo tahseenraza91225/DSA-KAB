@@ -1,0 +1,126 @@
+q2
+
+#include<stdio.h>
+#include<stdlib.h>
+int H[1000000];
+int size=0;
+int a=-1000001;
+void swap(int *a,int *b){
+       int temp=*a;
+       *a=*b;
+       *b=temp;
+}
+void MinHeapify(int i)
+{
+	int l = 2*i+1;
+	int r = 2*i+2;
+	int smallest = i;
+	if (l < size && H[l] < H[i])
+		smallest = l;
+	if (r < size && H[r] < H[smallest])
+		smallest = r;
+	if (smallest != i)
+	{
+		swap(&H[i], &H[smallest]);
+		MinHeapify(smallest);
+	}
+}
+int find(int data){
+    for(int i=0;i<size;i++){
+        if(H[i]==data)return i;
+    }
+    return -1;
+}
+void insert(int data){
+        size++;
+        H[size-1]=data;
+        // size++;
+        int i=size-1;
+    while(i!=0 && H[(i-1)/2]>H[i]){
+        swap(&H[(i-1)/2],&H[i]);
+        i=(i-1)/2;
+    }
+}
+void decrease(int data,int value){
+    int i=find(data);
+    H[i]=value;
+ while(i!=0 && H[(i-1)/2]>H[i]){
+        swap(&H[(i-1)/2],&H[i]);
+        i=(i-1)/2;
+    }
+}
+void extractMin(){
+	// if (size <= 0)
+	// 	return 1000001;
+	if (size == 1)
+	{
+		size--;
+		return ;
+	}
+	int root = H[0];
+	H[0] = H[size-1];
+	size--;
+	MinHeapify(0);
+	// return root;
+}
+int delete(int data){
+    int i=find(data);
+    if(i==-1)return -1;
+    int d=H[i];
+    decrease(data,-1000001);
+    extractMin();
+     return d;
+}
+void Print(){
+     for(int i=0;i<size;i++){
+          printf("%d ",H[i]);
+     }
+     printf("\n");
+}
+int find_min(){
+    return H[0];
+}
+
+int main(){
+    char c;
+    int data,value;
+    while (1){
+        //
+        scanf("%c ",&c);
+        scanf("\n");
+        if(c=='i') { 
+            scanf("%d",&data);
+            // scanf("\n");
+            insert(data);
+            // continue;
+        }
+        else if(c== 'p'){
+            // printf("p");
+            Print();
+        }
+        else if(c=='d'){
+            scanf("%d",&data);
+            printf("%d\n",delete(data));
+        }
+        
+        else if(c=='x'){
+            extractMin();
+            Print();
+        }
+        else if(c=='r'){
+            scanf("%d %d",&data,&value);
+            decrease(data,value);
+            printf("%d\n",data<=value?-1:value);
+        }
+        else if(c=='g'){
+            printf("%d\n",find_min());
+        }
+       else if(c=='e'){
+        // print("p");
+         return;
+       }
+            
+        //  print("arif");
+    }
+    return 0;
+}

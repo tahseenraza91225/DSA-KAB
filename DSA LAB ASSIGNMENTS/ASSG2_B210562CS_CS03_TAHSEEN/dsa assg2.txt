@@ -1,0 +1,106 @@
+6.
+
+
+
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct node {
+    int data;
+    struct node *left;
+    struct node *right;
+} Node;
+
+Node* createNode(int data) {
+    Node* newNode = (Node*) malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+Node* insert(Node* root, int data) {
+    if (root == NULL) {
+        return createNode(data);
+    } else if (data < root->data) {
+        root->left = insert(root->left, data);
+    } else if (data > root->data) {
+        root->right = insert(root->right, data);
+    }
+    return root;
+}
+
+Node* search(Node* root, int data) {
+    if (root == NULL || root->data == data) {
+        return root;
+    }
+    if (root->data < data) {
+        return search(root->right, data);
+    }
+    return search(root->left, data);
+}
+
+Node* minValueNode(Node* node) {
+    Node* current = node;
+    while (current->left != NULL) {
+        current = current->left;
+    }
+    return current;
+}
+
+Node* deleteNode(Node* root, int data) {
+    if (root == NULL) {
+        return root;
+    }
+    if (data < root->data) {
+        root->left = deleteNode(root->left, data);
+    } else if (data > root->data) {
+        root->right = deleteNode(root->right, data);
+    } else {
+        if (root->left == NULL) {
+            Node* temp = root->right;
+            free(root);
+            return temp;
+        } else if (root->right == NULL) {
+            Node* temp = root->left;
+            free(root);
+            return temp;
+        }
+        Node* temp = minValueNode(root->right);
+        root->data = temp->data;
+        root->right = deleteNode(root->right, temp->data);
+    }
+    return root;
+}
+int t;
+void inOrder(Node* root,int count) {
+    if (root != NULL) {
+        inOrder(root->left,count);
+        if(t==count)
+        printf("%d\n", root->data);
+        t++;
+        inOrder(root->right,count);
+    }
+}
+
+int main() {
+    Node* root = NULL;
+    char c;
+    scanf("%c", &c);
+    int count=0;
+    while(c!='e') {
+        if (c == 'i') {
+            count++;
+            int data;
+            scanf("%d", &data);
+            root = insert(root, data);
+        } else if (c == 'g') {
+            t=1;
+            if(count%2==0) inOrder(root,count/2);
+            else inOrder(root,(count/2+1));
+        }
+        else return 0;
+        scanf("\n%c",&c);
+    }
+    return 0;
+}
